@@ -33,15 +33,20 @@ For real CPU/GPU/RAM values (instead of the fallback simulation) you need to ena
 
 FPS is always measured directly via `requestAnimationFrame` and works without any Lively setting.
 
-## Enabling YouTube / now-playing detection
+## Enabling real YouTube status (recommended)
 
-Lively can forward the system's current media session (Chrome, Edge, Firefox, Spotify, etc.) via `window.livelyCurrentTrack(title)`.
+Since the wallpaper is hosted as a website, use the companion **Chrome Extension** in the `chrome-extension/` folder — it watches every YouTube tab you have open and pushes the real title + channel + progress into the wallpaper page in realtime.
 
-1. Open Lively → **Settings** → **General**
-2. Enable **"Now Playing"**
-3. When you play a YouTube video in your browser, the overlay will flip to **LIVE** and show the title/channel.
+1. Go to `chrome://extensions` and enable **Developer mode**.
+2. Click **"Load unpacked"** and select the `chrome-extension` folder.
+3. Click the extension icon → paste your wallpaper origin(s) (e.g. `https://your-site.github.io`) → **Save**.
+4. Open YouTube in any tab and hit play — the wallpaper overlay flips to **LIVE** within a second.
 
-If Lively's Now Playing feature isn't available in your version, the script falls back to a demo carousel so you can still see the UI working.
+See `chrome-extension/README.md` for full details.
+
+### Legacy: Lively "Now Playing" hook
+
+The wallpaper also still accepts `window.livelyCurrentTrack(title)` if you run it inside Lively with "Now Playing" enabled — but the extension is more reliable and works on any host.
 
 ## Customization quick reference
 
