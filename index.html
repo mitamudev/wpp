@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lively Wallpaper - System Monitor</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Background Video -->
+    <video id="bg-video"
+           autoplay
+           muted
+           loop
+           playsinline
+           preload="auto"
+           disablepictureinpicture
+           disableremoteplayback
+           src="background.mp4"></video>
+    <div id="video-error" class="video-error" style="display:none;">
+        <div>⚠ background.mp4 not found or cannot play</div>
+        <div class="video-error-small" id="video-error-detail"></div>
+    </div>
+
+    <!-- Top Left: System Info Overlay -->
+    <div class="overlay overlay-top-left" id="system-overlay">
+        <div class="overlay-title">SYSTEM MONITOR</div>
+        <div class="stat-row">
+            <span class="stat-label">RAM</span>
+            <div class="stat-bar-container">
+                <div class="stat-bar" id="ram-bar"></div>
+            </div>
+            <span class="stat-value" id="ram-value">-- / -- GB</span>
+        </div>
+        <div class="stat-row">
+            <span class="stat-label">CPU</span>
+            <div class="stat-bar-container">
+                <div class="stat-bar" id="cpu-bar"></div>
+            </div>
+            <span class="stat-value" id="cpu-value">--%</span>
+        </div>
+        <div class="stat-row">
+            <span class="stat-label">GPU</span>
+            <div class="stat-bar-container">
+                <div class="stat-bar" id="gpu-bar"></div>
+            </div>
+            <span class="stat-value" id="gpu-value">--%</span>
+        </div>
+        <div class="stat-row">
+            <span class="stat-label">FPS</span>
+            <div class="stat-bar-container">
+                <div class="stat-bar" id="fps-bar"></div>
+            </div>
+            <span class="stat-value" id="fps-value">-- FPS</span>
+        </div>
+    </div>
+
+    <!-- Bottom Left: YouTube Status Overlay -->
+    <div class="overlay overlay-bottom-left" id="youtube-overlay">
+        <div class="yt-header">
+            <svg class="yt-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path fill="#FF0000" d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+            </svg>
+            <span class="yt-title-text">NOW WATCHING</span>
+            <span class="yt-status" id="yt-status">OFFLINE</span>
+        </div>
+        <div class="yt-video-title" id="yt-video-title">Not watching anything</div>
+        <div class="yt-channel" id="yt-channel">—</div>
+        <div class="yt-progress">
+            <div class="yt-progress-bar" id="yt-progress-bar"></div>
+        </div>
+        <div class="yt-time">
+            <span id="yt-current-time">0:00</span>
+            <span id="yt-duration">0:00</span>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

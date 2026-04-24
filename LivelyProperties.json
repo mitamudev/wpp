@@ -1,0 +1,28 @@
+{
+  "overlayOpacity": {
+    "type": "slider",
+    "text": "Overlay opacity",
+    "value": 55,
+    "min": 0,
+    "max": 100,
+    "step": 5
+  },
+  "showSystemMonitor": {
+    "type": "checkbox",
+    "text": "Show system monitor (top-left)",
+    "value": true
+  },
+  "showYouTube": {
+    "type": "checkbox",
+    "text": "Show YouTube status (bottom-left)",
+    "value": true
+  },
+  "videoVolume": {
+    "type": "slider",
+    "text": "Background video volume",
+    "value": 0,
+    "min": 0,
+    "max": 100,
+    "step": 5
+  }
+}

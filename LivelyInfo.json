@@ -1,0 +1,23 @@
+{
+  "AppVersion": "2.0.0.0",
+  "Title": "System Monitor Wallpaper",
+  "Thumbnail": "thumbnail.jpg",
+  "Preview": "preview.gif",
+  "Desc": "Animated wallpaper with realtime RAM/CPU/GPU/FPS monitoring and YouTube now-playing status.",
+  "Author": "You",
+  "License": "",
+  "Contact": "",
+  "Type": 1,
+  "FileName": "index.html",
+  "Arguments": "",
+  "IsAbsolutePath": false,
+  "Id": "",
+  "Tags": [
+    "System",
+    "Monitor",
+    "YouTube",
+    "HTML"
+  ],
+  "Version": 1,
+  "PartialCustomiseCategory": "Wallpaper"
+}
