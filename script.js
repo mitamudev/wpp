@@ -173,18 +173,40 @@
         }
     };
 
-    // ---------- Lively "Now Playing" Hook ----------
-    // Lively calls window.livelyCurrentTrack(title) when the
-    // "Now Playing" feature is enabled. It reports system media
-    // sessions (Chrome, Edge, Firefox, Spotify, ...).
-    // Format is usually "Title - Artist/Channel" or just "Title".
+    // ---------- Chrome Extension Bridge ----------
+    // The "Wallpaper YouTube Bridge" extension injects real YouTube
+    // state into this page via window.postMessage. We accept messages
+    // of shape: { source: 'wallpaper-yt-bridge', payload: { ... } }
+    let lastBridgeMsg = 0;
+    window.addEventListener('message', (event) => {
+        const data = event.data;
+        if (!data || data.source !== 'wallpaper-yt-bridge') return;
+        const p = data.payload || {};
+        lastBridgeMsg = Date.now();
+        state.yt.title       = p.title || '';
+        state.yt.channel     = p.channel || 'YouTube';
+        state.yt.isPlaying   = !!p.isPlaying;
+        state.yt.currentTime = p.currentTime || 0;
+        state.yt.duration    = p.duration    || 0;
+        renderYouTube();
+    });
+
+    // If the extension stops talking for 10s, mark offline
+    setInterval(() => {
+        if (lastBridgeMsg && Date.now() - lastBridgeMsg > 10000) {
+            state.yt.isPlaying = false;
+            renderYouTube();
+        }
+    }, 2000);
+
+    // ---------- Lively "Now Playing" Hook (optional legacy) ----------
+    // Only used if you run the wallpaper inside Lively without the extension.
     window.livelyCurrentTrack = function (trackStr) {
+        if (lastBridgeMsg) return; // extension has priority
         if (!trackStr || typeof trackStr !== 'string') {
             state.yt.isPlaying = false;
             return;
         }
-
-        // Parse "Title - Channel" format
         const sepIdx = trackStr.lastIndexOf(' - ');
         if (sepIdx > 0) {
             state.yt.title   = trackStr.substring(0, sepIdx).trim();
@@ -207,18 +229,7 @@
     // When not running inside Lively (preview in a browser or
     // Lively system-info feature disabled), simulate values so
     // the UI still behaves nicely.
-    let sim = {
-        cpu: 20, gpu: 15, ramUsed: 6000,
-        ytTimer: 0, ytPlaying: false,
-    };
-
-    const SAMPLE_VIDEOS = [
-        { title: 'Lo-Fi Hip Hop Radio - Beats to Relax/Study To', channel: 'Lofi Girl', duration: 9999 },
-        { title: 'How Lively Wallpaper Works Under the Hood',    channel: 'TechExplained',  duration: 842  },
-        { title: 'Ambient Forest Sounds 10 Hours 4K',             channel: 'Nature HD',      duration: 36000 },
-        { title: 'Building a Dashboard in Pure CSS',              channel: 'CSS Wizard',     duration: 1520 },
-    ];
-    let currentSimVideo = SAMPLE_VIDEOS[0];
+    let sim = { cpu: 20, gpu: 15, ramUsed: 6000 };
 
     function simulateSystemInfo() {
         if (state.insideLively) return; // real data is arriving
@@ -235,33 +246,6 @@
         state.ram.percent = (sim.ramUsed / state.ram.total) * 100;
     }
 
-    function simulateYouTube() {
-        if (state.insideLively && state.yt.isPlaying) return;
-
-        // Toggle every ~30s for demo purposes
-        sim.ytTimer++;
-        if (sim.ytTimer % 6 === 0) {
-            sim.ytPlaying = Math.random() > 0.2;
-            if (sim.ytPlaying) {
-                currentSimVideo = SAMPLE_VIDEOS[Math.floor(Math.random() * SAMPLE_VIDEOS.length)];
-                state.yt.currentTime = Math.random() * Math.min(60, currentSimVideo.duration);
-            }
-        }
-
-        if (sim.ytPlaying) {
-            state.yt.isPlaying = true;
-            state.yt.title    = currentSimVideo.title;
-            state.yt.channel  = currentSimVideo.channel;
-            state.yt.duration = currentSimVideo.duration;
-            state.yt.currentTime = Math.min(
-                state.yt.duration,
-                state.yt.currentTime + 5
-            );
-        } else {
-            state.yt.isPlaying = false;
-        }
-    }
-
     // ---------- Update Loops ----------
     // System stats: every 1.5 seconds
     setInterval(() => {
@@ -269,11 +253,18 @@
         renderSystem();
     }, 1500);
 
-    // YouTube status: every 5 seconds
+    // YouTube: keep progress bar ticking while playing, even between
+    // extension messages (they arrive ~once per second, but we want
+    // a smooth UI either way).
     setInterval(() => {
-        simulateYouTube();
+        if (state.yt.isPlaying && state.yt.duration > 0) {
+            state.yt.currentTime = Math.min(
+                state.yt.duration,
+                state.yt.currentTime + 1
+            );
+        }
         renderYouTube();
-    }, 5000);
+    }, 1000);
 
     // First paint
     renderSystem();
